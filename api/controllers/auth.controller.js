@@ -1,6 +1,7 @@
 import User from "../models/user.model.js";
 import bcryptjs from "bcryptjs";
 import { errorHandler } from "../utils/error.js";
+import jwt from 'jsonwebtoken';
 
 export const signup = async (req,res,next) =>{
     const  {username,email,password} = req.body; //fetching the data from the post method 'json' data is passed so we have to store it in a variable 
@@ -15,3 +16,22 @@ export const signup = async (req,res,next) =>{
         next(error);    //sends  the error to the next middleware function that will handle it
     }
 }
+
+
+export const signin = async (req, res, next) => {
+    const { email, password } = req.body;
+    try {
+      const validUser = await User.findOne({ email }); //search for a user with this email on database
+      if (!validUser) return next(errorHandler(404, 'User not found!')); //if no user is found send a custom error
+      const validPassword = bcryptjs.compareSync(password,validUser.password); //check if the entered password matchs the hash
+      if (!validPassword) return next(errorHandler(401, 'Wrong credentials!')); //if no user is found or the password does throws the error of wrong credentials
+      const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET); //creats a token 
+      const { password: pass, ...rest } = validUser._doc;
+      res
+        .cookie('access_token', token, { httpOnly: true })
+        .status(200)
+        .json(rest);
+    } catch (error) {
+      next(error);
+    }
+  };

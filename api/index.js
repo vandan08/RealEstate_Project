@@ -2,8 +2,9 @@ import express from 'express';
 import mongoose from 'mongoose';
 import userRouter from './routes/user.route.js';
 import  authRouter from './routes/auth.route.js'
-// import dotenv from 'dotenv';
-// dotenv.config();
+import dotenv from 'dotenv';
+// require("dotenv").config();
+dotenv.config(); 
 
 mongoose.connect("mongodb+srv://vandan:vandan@real-estate.ecxgbbb.mongodb.net/real-estate?retryWrites=true&w=majority&appName=real-estate")
 .then(()=>{
