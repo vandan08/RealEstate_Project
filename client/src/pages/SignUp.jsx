@@ -56,9 +56,7 @@ export default function SignUp() {
         </Link>
       </div>
       { error && (
-        <div className='bg-red-600 rounded-md p-3 shadow-sm border w-full'>
-          <strong className='font-bold'>Error!</strong> {error}
-        </div>
+          <strong className='font-bold text-red-600'>{error}</strong> 
       )}
     </div>
   )
