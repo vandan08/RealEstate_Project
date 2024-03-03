@@ -21,3 +21,13 @@ app.listen(3000, () => {
 
 app.use('/api/user', userRouter);
 app.use('/api/auth', authRouter); 
+
+app.use((err,req,res,next)=>{ //this is the middleware function to create a function to handle errors while fetching or pushing data in database 
+    const  status= err.status || 500;   
+    const message  = err.message|| "Internal Server Error";
+    return  res.status(status).send({
+        success: false,
+        status,
+        message
+    });
+})
