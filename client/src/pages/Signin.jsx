@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { Link,useNavigate} from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux';
+import { signInStart,signInFailure,signInSuccess } from '../redux/user/userSlice';
 
 export default function SignIn() {
   const [formData,setformData] = useState({})
-  const [error,setError] = useState(null);
-  const [loading,setLoading] = useState(false);
+  const {loading,error} = useSelector((state)=>state.user);
   const navigate=useNavigate();
+  const dispatch = useDispatch();
   const handleChange  = (e) => {  //handleChange function use to track our each and every action which we enter in input 
     setformData({ 
       ...formData,
@@ -15,7 +17,7 @@ export default function SignIn() {
   const handleSubmit = async (e) =>{ //handleSubmit is a callback function that passes the data to database  when form is submitted
     e.preventDefault();
     try {
-      setLoading(true);
+      dispatch(signInStart()); //this action is used to show the loading spinner in Redux Toolkit
       const res = await fetch('/api/auth/signin',{
         method: "POST",
         headers:{
@@ -25,16 +27,13 @@ export default function SignIn() {
       });
       const data = await res.json();
       if (data.success === false ) {
-        setLoading(false);
-        setError(data.message);
+        dispatch(signInFailure(data.message));// this action is used to display error message in Redux Toolkit
         return;
       }
-      setLoading(false);
-      setError(null);
+      dispatch(signInSuccess(data)); // this action will save user info into global state and also hide the loading spinner
       navigate('/')
     } catch (error) {
-      setLoading(false);
-      setError(error.message);
+      dispatch(signInFailure(error.message)); //this will be shown when there are errors with our request
     }
   };
   return (
