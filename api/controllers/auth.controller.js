@@ -17,7 +17,6 @@ export const signup = async (req,res,next) =>{
     }
 }
 
-
 export const signin = async (req, res, next) => {
     const { email, password } = req.body;
     try {
@@ -35,3 +34,45 @@ export const signin = async (req, res, next) => {
       next(error);
     }
   };
+
+export const google = async (req, res, next) => {
+  try {
+    const user = await User.findOne({ email: req.body.email }); //this will check whether user is registered or not 
+    
+    //so if user is not registered so we have to create a token with jwt and add it in a cookie so we can access it 
+    if (user) {
+      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+      const { password: pass, ...rest } = user._doc; //we don't have to save user's  password in cookie so we have to save password in different way 
+      res
+        .cookie('access_token', token, { httpOnly: true })
+        .status(200)
+        .json(rest);
+    } else {
+      //so when we signup with google we never show any field of password so we have to create a random password manually  with this Math functions 
+      //it will generate a random 8 digit password from a-z and 1-9 it will create like this 0.438hea3a and slice the last 8 digit 
+      const generatedPassword =
+        Math.random().toString(36).slice(-8) +
+        Math.random().toString(36).slice(-8);
+      const hashedPassword = bcryptjs.hashSync(generatedPassword, 10);
+      //create new user based on google profile information 
+      const newUser = new User({
+        username:
+          req.body.name.split(' ').join('').toLowerCase() +
+          Math.random().toString(36).slice(-4),
+        email: req.body.email,
+        password: hashedPassword,
+        avatar: req.body.photo,
+      });
+      await newUser.save();
+      const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
+      const { password: pass, ...rest } = newUser._doc;
+      res
+        .cookie('access_token', token, { httpOnly: true })
+        .status(200)
+        .json(rest);
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
