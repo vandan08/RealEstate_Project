@@ -11,9 +11,9 @@ import {
   updateUserStart,
   updateUserSuccess,
   updateUserFailure,
-  // deleteUserFailure,
-  // deleteUserStart,
-  // deleteUserSuccess,
+  deleteUserFailure,
+  deleteUserStart,
+  deleteUserSuccess,
   // signOutUserStart,
 } from '../redux/user/userSlice';
 import { useDispatch } from 'react-redux';
@@ -64,7 +64,7 @@ export default function Profile() {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
-  /*
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -89,32 +89,25 @@ export default function Profile() {
     } catch (error) {
       dispatch(updateUserFailure(error.message));
     }
-  };
-  */
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  }; 
+
+  const handleDeleteUser = async () => {
     try {
-      dispatch(updateUserStart());
-      const res = await fetch(`/api/user/update/${currentUser._id}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
+      dispatch(deleteUserStart());
+      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+        method: 'DELETE',
       });
       const data = await res.json();
       if (data.success === false) {
-        dispatch(updateUserFailure(data.message));
+        dispatch(deleteUserFailure(data.message));
         return;
       }
-
-      dispatch(updateUserSuccess(data));
-      setUpdateSuccess(true);
+      dispatch(deleteUserSuccess(data));
     } catch (error) {
-      dispatch(updateUserFailure(error.message));
+      dispatch(deleteUserFailure(error.message));
     }
   };
-
+  
   return (
     <div className='p-3 max-w-lg mx-auto'>
       <h1 className='text-3xl font-semibold text-center my-7'>Profile</h1>
@@ -179,7 +172,7 @@ export default function Profile() {
         </form>
         <div className='flex justify-between mt-5'>
         <span
-          // onClick={handleDeleteUser}
+          onClick={handleDeleteUser}
           className='text-red-700 cursor-pointer'
         >
           Delete account
