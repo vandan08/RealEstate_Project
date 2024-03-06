@@ -64,4 +64,91 @@ export const createListing = async (req, res, next) => {
       next(error);
     }
   };
+
+  export const getListings = async (req, res, next) => {
+    try {
+      const limit = parseInt(req.query.limit) || 9;
+      const startIndex = parseInt(req.query.startIndex) || 0;
+      let offer = req.query.offer;
+      // this basically search in the database if the offer checkbox is not checked or the offer value is null because if we directly go to the search we show us all the listings have offer or not 
+      if (offer === undefined || offer === 'false') {
+        offer = { $in: [false, true] };
+      }
+  
+      let security = req.query.security;
+  
+      if (security === undefined || security === 'false') {
+        security = { $in: [false, true] };
+      }
+
+      let furnished = req.query.furnished;
+  
+      if (furnished === undefined || furnished === 'false') {
+        furnished = { $in: [false, true] };
+      }
+  
+      let parking = req.query.parking;
+  
+      if (parking === undefined || parking === 'false') {
+        parking = { $in: [false, true] };
+      }
+  
+      let type = req.query.type;
+  
+      if (type === undefined || type === 'all') {
+        type = { $in: ['sale', 'rent'] };
+      }
+
+      // let ptype = req.query.ptype;
+      
+      // if (type === undefined || type === 'all') {
+      //   type = { $in: ['house','farm','plot','pg'] };
+      // }
+  
+      const searchTerm = req.query.searchTerm || '';
+      const ptype = req.query.ptype || ''; // Add this line to get the ptype query parameter
+      const sort = req.query.sort || 'createdAt';
+  
+      const order = req.query.order || 'desc';
+  
+      // const listings = await Listing.find({
+      //   // $or: [
+      //   //   { name: { $regex: searchTerm, $options: 'i' } },
+      //   //   { address: { $regex: searchTerm, $options: 'i' } },
+      //   //   { ptype: { $regex: ptype, $options: 'i' } },
+      //   // ],
+      //   name: { $regex: searchTerm, $options: 'i' },
+      //   offer,
+      //   furnished,
+      //   security,
+      //   parking,
+      //   type,
+      //   // ptype
+      // })
+      //   .sort({ [sort]: order })
+      //   .limit(limit)
+      //   .skip(startIndex);
+
+      const listingsQuery = {
+        name: { $regex: searchTerm, $options: 'i' },
+        offer,
+        furnished,
+        parking,
+        type,
+      };
+  
+      // Add a condition to filter by ptype if it is not empty
+      if (ptype !== '' && ptype !== 'all') {
+        listingsQuery.ptype = ptype;
+      }
+  
+      const listings = await Listing.find(listingsQuery)
+        .sort({ [sort]: order })
+        .limit(limit)
+        .skip(startIndex);
+      return res.status(200).json(listings);
+    } catch (error) {
+      next(error);
+    }
+  };
   
