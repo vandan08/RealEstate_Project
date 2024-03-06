@@ -4,14 +4,22 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import SwiperCore from 'swiper';
 import { Navigation } from 'swiper/modules';
 import 'swiper/css/bundle';
-
+import {
+    FaBath,
+    FaBed,
+    FaChair,
+    FaMapMarkedAlt,
+    FaMapMarkerAlt,
+    FaParking,
+    FaShare,
+  } from 'react-icons/fa';
+  import { FaBuildingShield } from "react-icons/fa6";
 export default function Listing() {
   SwiperCore.use([Navigation]);
-
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(false);
-  const params = useParams();
   const [error, setError] = useState(false);
+  const params = useParams();
 
     useEffect(() => {
         const fetchListing = async () => {
@@ -35,6 +43,10 @@ export default function Listing() {
         fetchListing();
       }, [params.listingId]);
 
+      useEffect(() => {
+        console.log("listing.imageUrls:", listing?.imageUrls);
+    }, [listing]);
+
   return (
     <main>
         {loading && <p className='text-center my-7 text-2xl'>Loading...</p>}
@@ -50,10 +62,11 @@ export default function Listing() {
                     className='h-[550px]'
                     style={{
                         background: `url(${url}) center no-repeat`,
-                        backgroundSize: 'cover',
+                        backgroundSize: 'contain',
+                        // backgroundSize: 'cover',
+                        
                     }}
                     ></div>
-                    {console.log(url)}
                 </SwiperSlide>
                 ))}
             </Swiper>
@@ -75,9 +88,10 @@ export default function Listing() {
                 Link copied!
                 </p>
             )}
+            */}
             <div className='flex flex-col max-w-4xl mx-auto p-3 my-7 gap-4'>
                 <p className='text-2xl font-semibold'>
-                {listing.name} - ${' '}
+                {listing.name} - ₹{' '}
                 {listing.offer
                     ? listing.discountPrice.toLocaleString('en-US')
                     : listing.regularPrice.toLocaleString('en-US')}
@@ -88,20 +102,25 @@ export default function Listing() {
                 {listing.address}
                 </p>
                 <div className='flex gap-4'>
-                <p className='bg-red-900 w-full max-w-[200px] text-white text-center p-1 rounded-md'>
+                <p className='bg-red-800 w-full max-w-[200px] text-white text-center p-1 rounded-md'>
                     {listing.type === 'rent' ? 'For Rent' : 'For Sale'}
                 </p>
                 {listing.offer && (
-                    <p className='bg-green-900 w-full max-w-[200px] text-white text-center p-1 rounded-md'>
-                    ${+listing.regularPrice - +listing.discountPrice} OFF
+                    <p className='bg-green-800 w-full max-w-[200px] text-white text-center p-1 rounded-md'>
+                    ₹{+listing.regularPrice - +listing.discountPrice} OFF
                     </p>
                 )}
                 </div>
                 <p className='text-slate-800'>
+                <span className='font-semibold text-black'>Type - </span>
+                {listing.ptype}
+                </p>
+                <p className='text-slate-800'>
                 <span className='font-semibold text-black'>Description - </span>
                 {listing.description}
                 </p>
-                <ul className='text-green-900 font-semibold text-sm flex flex-wrap items-center gap-4 sm:gap-6'>
+                {/* <ul className='text-green-900 font-semibold text-sm flex flex-wrap items-center gap-4 sm:gap-6'>
+                
                 <li className='flex items-center gap-1 whitespace-nowrap '>
                     <FaBed className='text-lg' />
                     {listing.bedrooms > 1
@@ -115,6 +134,10 @@ export default function Listing() {
                     : `${listing.bathrooms} bath `}
                 </li>
                 <li className='flex items-center gap-1 whitespace-nowrap '>
+                    <FaBuildingShield className='text-lg' />
+                    {listing.security ? 'Provide Security' : 'No Security'}
+                </li>
+                <li className='flex items-center gap-1 whitespace-nowrap '>
                     <FaParking className='text-lg' />
                     {listing.parking ? 'Parking spot' : 'No Parking'}
                 </li>
@@ -122,7 +145,44 @@ export default function Listing() {
                     <FaChair className='text-lg' />
                     {listing.furnished ? 'Furnished' : 'Unfurnished'}
                 </li>
+                </ul> */}
+                <div className='flex gap-6'>
+                {listing.ptype !== 'plot' && (
+                <ul className='text-green-900 font-semibold text-sm flex flex-wrap items-center gap-4 sm:gap-6'>
+                    <li className='flex items-center gap-1 whitespace-nowrap '>
+                    <FaBed className='text-lg' />
+                    {listing.ptype === 'farm'
+                        ? `${listing.bedrooms} rooms `
+                        : listing.bedrooms > 1
+                        ? `${listing.bedrooms} beds `
+                        : `${listing.bedrooms} bed `}
+                    </li>
+                    <li className='flex items-center gap-1 whitespace-nowrap '>
+                    <FaBath className='text-lg' />
+                    {listing.bathrooms > 1
+                        ? `${listing.bathrooms} baths `
+                        : `${listing.bathrooms} bath `}
+                    </li>
                 </ul>
+                )}
+                <ul className='text-green-900 font-semibold text-sm flex flex-wrap items-center gap-4 sm:gap-6'>
+                <li className='flex items-center gap-1 whitespace-nowrap '>
+                    <FaBuildingShield className='text-lg' />
+                    {listing.security ? 'Provide Security' : 'No Security'}
+                </li>
+                <li className='flex items-center gap-1 whitespace-nowrap '>
+                    <FaParking className='text-lg' />
+                    {listing.parking ? 'Parking slot' : 'No Parking'}
+                </li>
+                {listing.ptype !== 'farm'  && listing.ptype !== 'plot'  &&  (
+                <li className='flex items-center gap-1 whitespace-nowrap '>
+                    <FaChair className='text-lg' />
+                    {listing.furnished ? 'Furnished' : 'Unfurnished'}
+                </li>
+                )}
+                </ul>
+            </div>
+                {/*
                 {currentUser && listing.userRef !== currentUser._id && !contact && (
                 <button
                     onClick={() => setContact(true)}
@@ -132,8 +192,8 @@ export default function Listing() {
                 </button>
                 )}
                 {contact && <Contact listing={listing} />}
-            </div>
                 */}
+            </div>
         </div>
         )}
     </main>
