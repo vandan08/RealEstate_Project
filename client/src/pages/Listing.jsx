@@ -3,22 +3,27 @@ import { useParams } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import SwiperCore from 'swiper';
 import { Navigation } from 'swiper/modules';
+import { useSelector } from 'react-redux';
 import 'swiper/css/bundle';
 import {
     FaBath,
     FaBed,
     FaChair,
-    FaMapMarkedAlt,
+    // FaMapMarkedAlt,
     FaMapMarkerAlt,
     FaParking,
-    FaShare,
+    // FaShare,
   } from 'react-icons/fa';
   import { FaBuildingShield } from "react-icons/fa6";
+import Contact from '../components/Contact';
 export default function Listing() {
   SwiperCore.use([Navigation]);
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const [contact, setContact] = useState(false);
+  const { currentUser } = useSelector((state) => state.user);
+
   const params = useParams();
 
     useEffect(() => {
@@ -182,7 +187,6 @@ export default function Listing() {
                 )}
                 </ul>
             </div>
-                {/*
                 {currentUser && listing.userRef !== currentUser._id && !contact && (
                 <button
                     onClick={() => setContact(true)}
@@ -192,7 +196,6 @@ export default function Listing() {
                 </button>
                 )}
                 {contact && <Contact listing={listing} />}
-                */}
             </div>
         </div>
         )}
