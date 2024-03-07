@@ -5,6 +5,7 @@ import  authRouter from './routes/auth.route.js'
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import listingRouter from  './routes/listing.route.js';
+import path from 'path';
 // require("dotenv").config();
 dotenv.config(); 
 
@@ -13,6 +14,9 @@ mongoose.connect("mongodb+srv://vandan:vandan@real-estate.ecxgbbb.mongodb.net/re
     console.log("Connected to Database");
 })
 .catch(err => {console.error(err)});
+
+const __dirname = path.resolve();
+
 
 const app = express();
 app.use(express.json());
@@ -26,6 +30,12 @@ app.listen(3000, () => {
 app.use('/api/user', userRouter);
 app.use('/api/auth', authRouter); 
 app.use('/api/listing', listingRouter); 
+
+//use to create dynamic folder structure 
+app.use(express.static(path.join(__dirname, '/client/dist')));
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
+  })
 
 app.use((err,req,res,next)=>{ //this is the middleware function to create a function to handle errors while fetching or pushing data in database 
     const  status= err.status || 500;   
