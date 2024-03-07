@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
+import ListingItem from "../components/ListingItem";
 
 
 export default function Search() {
@@ -189,6 +190,8 @@ export default function Search() {
             />
             <span>Farm</span>
           </div>
+        </div>
+        <div className='flex gap-2 flex-wrap items-center'>
           <div className='flex gap-2'>
             <input
               type='checkbox'
@@ -210,6 +213,7 @@ export default function Search() {
             <span>PG</span>
           </div>
         </div>
+
         <div className='flex gap-2 flex-wrap items-center'>
           <label className='font-semibold'>Type:</label>
           <div className='flex gap-2'>
@@ -310,7 +314,7 @@ export default function Search() {
         Listing results:
       </h1>
       <div className='p-7 flex flex-wrap gap-4'>
-        {/* {!loading && listings.length === 0 && (
+         {!loading && listings.length === 0 && (
           <p className='text-xl text-slate-700'>No listing found!</p>
         )}
         {loading && (
@@ -325,14 +329,14 @@ export default function Search() {
             <ListingItem key={listing._id} listing={listing} />
           ))} 
 
-        {showMore && (
+        {/* {showMore && (
           <button
             // onClick={onShowMoreClick}
             className='text-green-700 hover:underline p-7 text-center w-full'
           >
             Show more
           </button>
-       )}  */}
+       )}    */}
       </div>
     </div>
   </div>
