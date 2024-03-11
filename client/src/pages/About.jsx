@@ -1,4 +1,5 @@
 import React from 'react';
+import Footer from '../components/Footer';
 
 export default function About() {
   return (
@@ -45,6 +46,7 @@ export default function About() {
           Skyline Estate is committed to safeguarding your data and privacy. As an end-user of our website, you are responsible for the information you share. Rest assured, no external authorities will interfere with your data. Your privacy matters to us.
         </p>
       </div>
+      {/* <Footer/> */}
     </div>
   );
 }

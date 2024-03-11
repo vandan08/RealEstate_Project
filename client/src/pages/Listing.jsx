@@ -16,6 +16,7 @@ import {
   } from 'react-icons/fa';
   import { FaBuildingShield } from "react-icons/fa6";
 import Contact from '../components/Contact';
+import Footer from '../components/Footer';
 export default function Listing() {
   SwiperCore.use([Navigation]);
   const [listing, setListing] = useState(null);
@@ -27,6 +28,7 @@ export default function Listing() {
   const params = useParams();
 
     useEffect(() => {
+        //fetch the data from the backend api which we created to get the listing details by id
         const fetchListing = async () => {
           try {
             setLoading(true);
@@ -48,9 +50,9 @@ export default function Listing() {
         fetchListing();
       }, [params.listingId]);
 
-      useEffect(() => {
-        console.log("listing.imageUrls:", listing?.imageUrls);
-    }, [listing]);
+    //   useEffect(() => {
+    //     console.log("listing.imageUrls:", listing?.imageUrls);
+    // }, [listing]);
 
   return (
     <main>
@@ -199,6 +201,7 @@ export default function Listing() {
             </div>
         </div>
         )}
+        <Footer/>
     </main>
   )
 }
