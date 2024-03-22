@@ -5,6 +5,7 @@ import  authRouter from './routes/auth.route.js'
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import listingRouter from  './routes/listing.route.js';
+import adminRoutes from './routes/admin.routes.js';
 import path from 'path';
 // require("dotenv").config();
 dotenv.config(); 
@@ -30,6 +31,7 @@ app.listen(3000, () => {
 app.use('/api/user', userRouter);
 app.use('/api/auth', authRouter); 
 app.use('/api/listing', listingRouter); 
+app.use('/api/admin', adminRoutes);
 
 //use to create dynamic folder structure 
 app.use(express.static(path.join(__dirname, '/client/dist')));
